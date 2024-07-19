@@ -61,16 +61,15 @@ def main():
             # Convert 'price' to numeric, errors='coerce' will turn non-numeric values into NaN
             filtered_data['price'] = pd.to_numeric(filtered_data['price'], errors='coerce')
             
-            # Set 'title' as index for the line chart (or 'store' if that's more relevant)
-            filtered_data.set_index('title', inplace=True)
+            # Group by 'store' to get average price per store (or use other aggregation if needed)
+            price_by_store = filtered_data.groupby('store')['price'].mean().reset_index()
             
-            # Ensure we have some price data to plot
-            if not filtered_data['price'].isna().all():
-                st.line_chart(filtered_data['price'])
-            else:
-                st.write("No valid price data available for the selected item.")
+            # Create a bar chart
+            st.bar_chart(price_by_store.set_index('store'))
+
         else:
             st.write("No data available for the selected item.")
+
 
 if __name__ == "__main__":
     main()
